@@ -12,7 +12,7 @@ const cors = require('cors')
 const app = express()
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173', // replace with your frontend URL
+    origin: 'https://webprof.vercel.app', // replace with your frontend URL
     // credentials: true
 }));
 dotenv.config();
