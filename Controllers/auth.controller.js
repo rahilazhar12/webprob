@@ -64,12 +64,12 @@ const Adminlogin = async (req, res) => {
         // Send response
         return res.status(200).send({
             message: "Login successful",
-                email: user.email,
-                role: user.role,
-                id: user._id,
-                name: user.name,
-                token: token
-            
+            email: user.email,
+            role: user.role,
+            id: user._id,
+            name: user.name,
+            token: token
+
 
         });
     } catch (error) {
