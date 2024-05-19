@@ -1,4 +1,4 @@
-const allowedIP = "39.37.139.166";
+const allowedIP = "39.37.155.224";
 
 const checkIP = (req, res, next) => {
     const requestIP = req.headers['x-forwarded-for'] || req.ip || req.connection.remoteAddress;
