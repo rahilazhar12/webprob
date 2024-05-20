@@ -9,18 +9,24 @@ const markAttendance = async (req, res) => {
     const { staffId, date, status } = req.body;
 
     try {
+        // Check if attendance already marked for this staff on the given date
+        const existingAttendance = await Attendance.findOne({ staffId, date });
+        if (existingAttendance) {
+            return res.status(400).json({ message: "Attendance already marked for this staff on this date" });
+        }
+
         const staff = await Staff.findById(staffId);
         if (!staff) {
             return res.status(404).json({ message: "Staff not found" });
         }
 
         const currentTime = moment().tz('Asia/Karachi');
-        const currentTimeString = currentTime.format('hh:mm:ss A'); // Get current time in HH:MM:SS AM/PM format
-        const timelinessStatus = currentTime.hour() > 12 || (currentTime.hour() === 12 && currentTime.minute() > 5) ? 'Late' : 'On Time';
+        const currentTimeString = currentTime.format('hh:mm:ss A');
+        const timelinessStatus = currentTime.hour() > 12 || (currentTime.hour() === 12 && currentTime.minute() > 10) ? 'Late' : 'On Time';
 
         const attendance = new Attendance({
             staffId,
-            staffName: staff.name, // Assuming the Staff model has a 'name' field
+            staffName: staff.name,
             date,
             time: currentTimeString,
             status,
@@ -48,7 +54,7 @@ const getAttendanceByDate = async (req, res) => {
 
 
 
-module.exports = { markAttendance , getAttendanceByDate }
+module.exports = { markAttendance, getAttendanceByDate }
 
 
 // const getAttendanceByMonth = async (req, res) => {
