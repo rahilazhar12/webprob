@@ -1,11 +1,13 @@
-const allowedIP = "39.37.155.224";
+const requestIp = require('request-ip');
+
+const allowedIP = "59.103.75.183";
 
 const checkIP = (req, res, next) => {
-    const requestIP = req.headers['x-forwarded-for'] || req.ip || req.connection.remoteAddress;
+    const clientIp = requestIp.getClientIp(req); 
 
-    console.log('Request IP:', requestIP);
+    console.log('Client IP:', clientIp);
 
-    if (requestIP === allowedIP) {
+    if (clientIp === allowedIP) {
         next();
     } else {
         res.status(403).json({ message: 'Access denied: Unauthorized IP address' });
