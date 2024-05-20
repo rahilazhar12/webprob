@@ -1,5 +1,6 @@
 const Staff = require('../Modals/staff.modal')
 const Attendance = require('../Modals/attendence.modal')
+const moment = require('moment-timezone');
 
 
 
@@ -13,10 +14,17 @@ const markAttendance = async (req, res) => {
             return res.status(404).json({ message: "Staff not found" });
         }
 
+        const currentTime = moment().tz('Asia/Karachi');
+        const currentTimeString = currentTime.format('hh:mm:ss A'); // Get current time in HH:MM:SS AM/PM format
+        const timelinessStatus = currentTime.hour() > 12 || (currentTime.hour() === 12 && currentTime.minute() > 5) ? 'Late' : 'On Time';
+
         const attendance = new Attendance({
             staffId,
+            staffName: staff.name, // Assuming the Staff model has a 'name' field
             date,
-            status
+            time: currentTimeString,
+            status,
+            timelinessStatus
         });
 
         const result = await attendance.save();
@@ -26,19 +34,22 @@ const markAttendance = async (req, res) => {
     }
 };
 
-module.exports = { markAttendance }
+
+const getAttendanceByDate = async (req, res) => {
+    const { date } = req.query;
+
+    try {
+        const attendanceRecords = await Attendance.find({ date: new Date(date) }).populate('staffId', 'name');
+        return res.status(200).json({ attendance: attendanceRecords });
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching attendance", error: error.message });
+    }
+};
 
 
-// const getAttendanceByDate = async (req, res) => {
-//     const { date } = req.query;
 
-//     try {
-//         const attendanceRecords = await Attendance.find({ date: new Date(date) }).populate('staffId', 'name');
-//         return res.status(200).json({ attendance: attendanceRecords });
-//     } catch (error) {
-//         return res.status(500).json({ message: "Error fetching attendance", error: error.message });
-//     }
-// };
+module.exports = { markAttendance , getAttendanceByDate }
+
 
 // const getAttendanceByMonth = async (req, res) => {
 //     const { month, year } = req.query;

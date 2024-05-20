@@ -25,9 +25,10 @@ app.use(cors({
     },
     credentials: true
 }));
-
-
 dotenv.config();
+
+
+
 
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/staff', staff)
