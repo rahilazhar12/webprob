@@ -1,6 +1,6 @@
 const requestIp = require('request-ip');
 
-const allowedIP = "59.103.75.183";
+const allowedIP = process.env.ALLOWED_IP;
 
 const checkIP = (req, res, next) => {
     const clientIp = requestIp.getClientIp(req); 
