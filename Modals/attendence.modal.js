@@ -14,9 +14,15 @@ const attendanceSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    time: {
+    checkInTime: {
         type: String,
         required: true,
+    },
+    checkOutTime: {
+        type: String,
+    },
+    totalWorkingHours: {
+        type: String,
     },
     status: {
         type: String,

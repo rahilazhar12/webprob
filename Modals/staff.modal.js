@@ -50,10 +50,7 @@ const staffschema = new mongoose.Schema(
       type: String,
       default: "Active",
     },
-    leadCount: {
-      type: Number,
-      default: 0,
-    },
+   
   },
   { timestamps: true }
 );
