@@ -1,6 +1,7 @@
 const User = require('../Modals/user.modal')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const moment = require('moment-timezone');
 
 
 const Adminregister = async (req, res) => {
@@ -33,6 +34,52 @@ const Adminregister = async (req, res) => {
 };
 
 
+// const Adminlogin = async (req, res) => {
+//     const { email, password } = req.body;
+
+//     // Validate input
+//     if (!email || !password) {
+//         return res.status(400).send({ message: "Email and password are required" });
+//     }
+
+//     try {
+//         // Check if user exists
+//         const user = await User.findOne({ email });
+//         if (!user) {
+//             return res.status(400).send({ message: "Invalid credentials" });
+//         }
+
+//         // Compare password
+//         const isPasswordCorrect = await bcrypt.compare(password, user.password);
+//         if (!isPasswordCorrect) {
+//             return res.status(400).send({ message: "Invalid credentials" });
+//         }
+
+//         // Generate token
+//         const token = jwt.sign(
+//             { _id: user._id, role: user.role },
+//             process.env.JWT_SECRET,
+//             { expiresIn: '7d' }
+//         );
+
+//         // Send response
+//         return res.status(200).send({
+//             message: "Login successful",
+//             email: user.email,
+//             role: user.role,
+//             id: user._id,
+//             name: user.name,
+//             token: token
+
+
+//         });
+//     } catch (error) {
+//         // Handle unexpected errors
+//         console.error(error);
+//         return res.status(500).send({ message: "Internal Server Error" });
+//     }
+// }
+
 const Adminlogin = async (req, res) => {
     const { email, password } = req.body;
 
@@ -54,6 +101,13 @@ const Adminlogin = async (req, res) => {
             return res.status(400).send({ message: "Invalid credentials" });
         }
 
+        // Save the previous last seen time
+        const previousLastSeen = user.lastSeen;
+
+        // Update last seen to current time in PST with AM/PM format
+        user.lastSeen = moment().tz('Asia/Karachi').format('YYYY-MM-DD hh:mm A');
+        await user.save();
+
         // Generate token
         const token = jwt.sign(
             { _id: user._id, role: user.role },
@@ -68,9 +122,8 @@ const Adminlogin = async (req, res) => {
             role: user.role,
             id: user._id,
             name: user.name,
-            token: token
-
-
+            token: token,
+            lastSeen: previousLastSeen
         });
     } catch (error) {
         // Handle unexpected errors
@@ -78,6 +131,8 @@ const Adminlogin = async (req, res) => {
         return res.status(500).send({ message: "Internal Server Error" });
     }
 }
+
+
 
 
 

@@ -9,7 +9,6 @@ const Userschema = new mongoose.Schema(
         email: {
             type: String,
             required: true,
-            unique: true // Ensure emails are unique
         },
         password: {
             type: String,
@@ -19,6 +18,9 @@ const Userschema = new mongoose.Schema(
             type: String,
             enum: ["Admin", "Manager"],
             default: "Admin"
+        },
+        lastSeen: {
+            type: String // Store the formatted date string
         }
     },
     { timestamps: true }
