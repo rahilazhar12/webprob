@@ -130,7 +130,7 @@ const markAbsentees = async () => {
 //     }
 //   });
 
-cron.schedule('41 18 * * *', async () => {
+cron.schedule('43 18 * * *', async () => {
     console.log("Running the absentee marking job...");
     try {
         await markAbsentees();
