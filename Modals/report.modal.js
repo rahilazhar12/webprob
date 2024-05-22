@@ -1,5 +1,24 @@
 const mongoose = require("mongoose");
 
+const taskSchema = new mongoose.Schema({
+    description: {
+        type: String,
+        required: true
+    },
+    startTime: {
+        type: Date,
+        required: true
+    },
+    endTime: {
+        type: Date,
+        required: true
+    },
+    totalTime: {
+        type: String,
+        default: "0 hours 0 minutes 0 seconds"
+    }
+}, { _id: false });
+
 const reportSchema = new mongoose.Schema(
   {
     staff: {
@@ -11,14 +30,11 @@ const reportSchema = new mongoose.Schema(
       type: Date,
       required: true
     },
-    report: {
-      type: String,
-      required: true
-    }
+    tasks: [taskSchema]
   },
   { timestamps: true }
 );
 
- const Reports = mongoose.model("Report", reportSchema);
- 
- module.exports = Reports
+const Reports = mongoose.model("Report", reportSchema);
+
+module.exports = Reports;
