@@ -31,7 +31,7 @@ const attendanceSchema = new mongoose.Schema({
     },
     timelinessStatus: {
         type: String,
-        enum: ['On Time', 'Late'],
+        enum: ['On Time', 'Late' , 'Not Applicable'],
         required: true,
     }
 }, { timestamps: true });

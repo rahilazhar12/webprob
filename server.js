@@ -11,6 +11,12 @@ const screenshot = require('screenshot-desktop');
 const path = require('path');
 const fs = require('fs');
 const cron = require('node-cron');
+const Attendance = require("./Modals/attendence.modal");
+const Staff = require("./Modals/staff.modal");
+const moment = require('moment-timezone');
+
+
+
 
 
 
@@ -63,19 +69,80 @@ dotenv.config();
 //       console.error('Failed to capture screenshot:', err);
 //     }
 //   };
-  
+
 //   // Function to get a random delay within 15 seconds
 //   const getRandomDelay = () => Math.floor(Math.random() * 15000);
-  
+
 //   // Schedule the screenshot task every 15 seconds with a random delay
 //   setInterval(() => {
 //     const randomDelay = getRandomDelay();
 //     console.log(`Next screenshot in ${randomDelay / 1000} seconds`);
-    
+
 //     setTimeout(captureScreenshot, randomDelay);
 //   }, 15000);
-  
+
 //   console.log('Screenshot scheduler started.');
+
+const markAbsentees = async () => {
+    try {
+        const currentDate = moment().tz('Asia/Karachi').format('YYYY-MM-DD');
+        const staffList = await Staff.find();
+
+        for (const staff of staffList) {
+            const attendanceRecord = await Attendance.findOne({
+                staffId: staff._id,
+                date: currentDate
+            });
+
+            if (!attendanceRecord) {
+                const newAttendance = new Attendance({
+                    staffId: staff._id,
+                    staffName: staff.name,
+                    date: currentDate,
+                    checkInTime: 'Not Applicable',
+                    status: 'Absent',
+                    timelinessStatus: 'Not Applicable',
+                });
+
+                await newAttendance.save();
+            }
+        }
+
+        console.log("Absent status marked for non-present staff");
+    } catch (error) {
+        console.error("Error marking absentees:", error.message);
+    }
+};
+
+// // Run markAbsentees every 10 seconds
+// setInterval(markAbsentees, 10000);
+
+
+// markAbsentees()
+
+// cron.schedule('0 15 * * *', async () => { // runs daily at 3 PM
+//     console.log("Running the absentee marking job...");
+//     try {
+//       await markAbsentees();
+//       console.log("Absentee marking job completed successfully.");
+//     } catch (error) {
+//       console.error("Error running absentee marking job:", error);
+//     }
+//   });
+
+cron.schedule('23 18 * * *', async () => {
+    console.log("Running the absentee marking job...");
+    try {
+        await markAbsentees();
+        console.log("Absentee marking job completed successfully.");
+    } catch (error) {
+        console.error("Error running absentee marking job:", error);
+    }
+}, {
+    timezone: "Asia/Karachi"
+});
+
+
 
 
 
