@@ -21,10 +21,9 @@ const Staffreport = async (req, res) => {
     const endTime = new Date(task.endTime);
     const totalTimeMs = endTime - startTime; // Total time in milliseconds
 
-    // Convert milliseconds to hours, minutes, and seconds
+    // Convert milliseconds to hours and minutes
     const hours = Math.floor(totalTimeMs / (1000 * 60 * 60));
     const minutes = Math.floor((totalTimeMs % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((totalTimeMs % (1000 * 60)) / 1000);
 
     return {
       ...task,
@@ -56,7 +55,8 @@ const Staffreport = async (req, res) => {
   }
 };
 
-module.exports = { Staffreport };
+
+
 
 
 

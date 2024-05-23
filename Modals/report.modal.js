@@ -6,16 +6,16 @@ const taskSchema = new mongoose.Schema({
         required: true
     },
     startTime: {
-        type: Date,
+        type: String,  // Changed to String
         required: true
     },
     endTime: {
-        type: Date,
+        type: String,  // Changed to String
         required: true
     },
     totalTime: {
         type: String,
-        default: "0 hours 0 minutes 0 seconds"
+        default: "0 hours 0 minutes"
     }
 }, { _id: false });
 
@@ -35,6 +35,6 @@ const reportSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Reports = mongoose.model("Report", reportSchema);
+const Report = mongoose.model("Report", reportSchema);
 
-module.exports = Reports;
+module.exports = Report;
